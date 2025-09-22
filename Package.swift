@@ -5,11 +5,21 @@ import PackageDescription
 
 let package = Package(
     name: "SRTSwift",
+    platforms: [
+        .macOS(.v14),
+        .iOS(.v17),
+        .watchOS(.v8),
+        .tvOS(.v15),
+        .visionOS(.v2),
+    ],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "SRTSwift",
-            targets: ["SRTSwift"])
+            targets: ["SRTSwift"],
+        )
+    ],
+    dependencies: [
+        .package(url: "https://github.com/krzyzanowskim/OpenSSL-Package.git", from: "3.3.2000")
     ],
     targets: [
         .binaryTarget(
@@ -23,11 +33,20 @@ let package = Package(
         ),
         .target(
             name: "SRTSwift",
-            dependencies: ["SRTInterface"]
+            dependencies: [
+                "SRTInterface",
+                .product(name: "OpenSSL", package: "OpenSSL-Package"),
+            ],
+            swiftSettings: [
+                .interoperabilityMode(.Cxx)  // Enable C++ interoperability
+            ],
         ),
         .testTarget(
             name: "SRTSwiftTests",
-            dependencies: ["SRTSwift"]
+            dependencies: ["SRTSwift"],
+            swiftSettings: [
+                .interoperabilityMode(.Cxx)  // Enable C++ interoperability
+            ],
         ),
     ]
 )
