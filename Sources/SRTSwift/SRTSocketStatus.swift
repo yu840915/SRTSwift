@@ -1,7 +1,7 @@
 import SRTInterface
 
 extension SRTSocket {
-  public enum Status: UInt32, CustomStringConvertible {
+  public enum Status: UInt32, CustomStringConvertible, Sendable {
     case setUp = 1  // SRTS_INIT
     case opened
     case listening

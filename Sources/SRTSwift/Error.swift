@@ -70,6 +70,12 @@ public enum Error: Swift.Error, CustomStringConvertible, Equatable {
 
   case peer
 
+  case cannotEncodeArgument
+  case argumentTooLarge
+  case argumentOutOfRange
+
+  case srtError(String)
+
   public var canRetry: Bool {
     switch self {
     case .retriable,
@@ -125,6 +131,10 @@ public enum Error: Swift.Error, CustomStringConvertible, Equatable {
     case .transmissionTimeout: "transmission timeout"
     case .congestionWarning: "congestion warning"
     case .peer: "peer error"
+    case .cannotEncodeArgument: "cannot encode argument"
+    case .argumentTooLarge: "argument too large"
+    case .argumentOutOfRange: "argument out of range"
+    case let .srtError(message): "SRT error: \(message)"
     }
   }
 

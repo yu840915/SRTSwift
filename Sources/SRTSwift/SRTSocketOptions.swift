@@ -1,143 +1,148 @@
 import SRTInterface
 
-struct SRTOptions {
-  struct PreBindOptions {  //pre-bind
-    var bindToDevice: String?
-    var typeOfServiceOfIP: Int?
-    var timeToLiveOfIP: Int?
-    var IPFamilyOption: IPFamilyOption?
-    var maxSegmentSize: Int?
-    var receiveBufferSize: Int?
-    var reusingAddress: Bool?
-    var sendBufferSize: Int?
-    var UDPSendBufferSize: Int?
-    var UDPReceiveBufferSize: Int?
+public struct SRTOptions {
+  public struct PreBindOptions: Sendable {  //pre-bind
+    public var bindToDevice: String?
+    public var typeOfServiceOfIP: Int?
+    public var IPTTL: Int?
+    public var IPFamilyOption: IPFamilyOption?
+    public var maxSegmentSize: Int?
+    public var receiveBufferSize: Int?
+    public var reusingAddress: Bool?
+    public var sendBufferSize: Int?
+    public var UDPSendBufferSize: Int?
+    public var UDPReceiveBufferSize: Int?
   }
 
-  struct PreOptions {  //pre
-    var congestion: CongestionControllerType?
-    var connectionTimeout: Duration?
-    var cryptoMode: CryptoMode?
-    var isEncryptionEnforced: Bool?
-    var maxPacketsInFlight: Int?  //flow control
-    var acceptsGroupConnections: Bool?
-    var minSwitchPathThreshold: Duration?
-    var streamEncryptingKeyInterval: Int?
-    var streamEncryptingKeyRefreshRate: Int?
-    var linger: Duration?
-    var usingMessageAPI: Bool?
-    var minPeerVersion: Int?
-    var reportsNAK: Bool?
-    var packetFilter: String?
-    var passphrase: String?
-    var payloadSize: Int?
-    var keyLength: Int?
-    var peerIdleTimeout: Duration?
-    var peerLatency: Duration?
-    var receiveLatency: Duration?
-    var usingRendezvous: Bool?
-    var retransmissionAlgorithm: RetransmissionAlgorithm?
-    var streamID: String?
-    var isTooLatePacketDropEnabled: Bool?
-    var usingTimestampBasedPacketDeliveryMode: Bool?
-    var transmissionType: TransmissionType?
+  public struct PreOptions: Sendable {  //pre
+    public var congestion: CongestionControllerType?
+    public var connectionTimeout: Duration?
+    public var cryptoMode: CryptoMode?
+    public var isEncryptionEnforced: Bool?
+    public var maxPacketsInFlight: Int?  //flow control
+    public var acceptsGroupConnections: Bool?
+    public var minSwitchPathThreshold: Duration?
+    public var streamEncryptingKeyInterval: Int?
+    public var streamEncryptingKeyRefreshRate: Int?
+    public var latency: Duration?
+    public var usingMessageAPI: Bool?
+    public var minPeerVersion: Int?
+    public var reportsNAK: Bool?
+    public var packetFilter: String?
+    public var passphrase: String?
+    public var payloadSize: Int?
+    public var keyLength: Int?
+    public var peerIdleTimeout: Duration?
+    public var peerLatency: Duration?
+    public var receiveLatency: Duration?
+    public var usingRendezvous: Bool?
+    public var retransmissionAlgorithm: RetransmissionAlgorithm?
+    public var streamID: String?
+    public var shouldDropTooLatePacket: Bool?
+    public var usingTimestampBasedPacketDeliveryMode: Bool?
+    public var transmissionType: TransmissionType?
   }
 
-  struct PostOptions {  //post
-    var isDriftTracerEnabled: Bool?
-    var inputBandwidth: Int?
-    var minInputBandwidth: Int?
-    var maxTimeToLiveOfLoss: Duration?
-    var maxBandwidth: MaxBandwidthOption?
-    var maxRetransmissionBandwidth: MaxRetransmissionBandwidthOption?
-    var recoveryOverheadPercentage: Int?
-    var isReadingBlocking: Bool?
-    var receiveTimeout: Duration?
-    var sendDropDelay: Duration?
-    var isSendingBlocking: Bool?
-    var sendTimeout: Duration?
+  public struct PostOptions: Sendable {  //post
+    public var isDriftTracerEnabled: Bool?
+    public var inputBandwidth: Int?
+    public var linger: Duration?
+    public var minInputBandwidth: Int?
+    public var maxLossTTL: Duration?
+    public var maxBandwidth: MaxBandwidthOption?
+    public var maxRetransmissionBandwidth: MaxRetransmissionBandwidthOption?
+    public var recoveryOverheadPercentage: Int?
+    public var isReadingBlocking: Bool?
+    public var receiveTimeout: Duration?
+    public var sendDropDelay: Duration?
+    public var isSendingBlocking: Bool?
+    public var sendTimeout: Duration?
   }
 
-  struct OptionReadings {  //read
-    var bindToDevice: String?
-    var isDriftTracerEnabled: Bool?
-    var epollEvent: EpollOptions?
-    var maxPacketsInFlight: Int?
-    var inputBandwidth: Int?
-    var minInputBandwidth: Int?
-    var typeOfServiceOfIP: Int?
-    var timeToLiveOfIP: Int?
-    var isIPv6Only: IPFamilyOption?
-    var streamEncryptingKeyInterval: Int?
-    var streamEncryptingKeyRefreshRate: Int?
-    var senderKeyMaterialState: KeyMaterialState?
-    var receiverKeyMaterialState: KeyMaterialState?
-    var linger: Duration?
-    var maxTimeToLiveOfLoss: Duration?
-    var maxBandwidth: MaxBandwidthOption?
-    var maxRetransmissionBandwidth: MaxRetransmissionBandwidthOption?
-    var minPeerVersion: Int?
-    var maxSegmentSize: Int?
-    var reportsNAK: Bool?
-    var recoveryOverheadPercentage: Int?
-    var packetFilter: String?
-    var keyLength: Int?
-    var peerIdleTimeout: Duration?
-    var peerLatency: Duration?
-    var peerVersion: Int?
-    var receiveBufferSize: Int?
-    var receivedDataSize: Int?
-    var keyMaterialState: KeyMaterialState?
-    var receiveLatency: Duration?
-    var isReadingBlocking: Bool?
-    var receiveTimeout: Duration?
-    var usingRendezvous: Bool?
-    var retransmissionAlgorithm: RetransmissionAlgorithm?
-    var reusingAddress: Bool?
-    var sendBufferSize: Int?
-    var sendingDataSize: Int?
-    var peerKeyMaterialState: KeyMaterialState?
-    var isSendingBlocking: Bool?
-    var sendTimeout: Duration?
-    var state: SRTSocket.Status?
-    var streamID: String?
-    var isTooLatePacketDropEnabled: Bool?
-    var localVersion: Int?
-    var UDPSendBufferSize: Int?
-    var UDPReceiveBufferSize: Int?
+  public struct OptionReadings: Sendable {  //read
+    public var bindToDevice: String?
+    public var isDriftTracerEnabled: Bool?
+    public var epollEvent: EpollOptions?
+    public var maxPacketsInFlight: Int?
+    public var inputBandwidth: Int?
+    public var minInputBandwidth: Int?
+    public var typeOfServiceOfIP: Int?
+    public var timeToLiveOfIP: Int?
+    public var isIPv6Only: IPFamilyOption?
+    public var streamEncryptingKeyInterval: Int?
+    public var streamEncryptingKeyRefreshRate: Int?
+    public var senderKeyMaterialState: KeyMaterialState?
+    public var receiverKeyMaterialState: KeyMaterialState?
+    public var linger: Duration?
+    public var maxTimeToLiveOfLoss: Duration?
+    public var maxBandwidth: MaxBandwidthOption?
+    public var maxRetransmissionBandwidth: MaxRetransmissionBandwidthOption?
+    public var minPeerVersion: Int?
+    public var maxSegmentSize: Int?
+    public var reportsNAK: Bool?
+    public var recoveryOverheadPercentage: Int?
+    public var packetFilter: String?
+    public var keyLength: Int?
+    public var peerIdleTimeout: Duration?
+    public var peerLatency: Duration?
+    public var peerVersion: Int?
+    public var receiveBufferSize: Int?
+    public var receivedDataSize: Int?
+    public var keyMaterialState: KeyMaterialState?
+    public var receiveLatency: Duration?
+    public var isReadingBlocking: Bool?
+    public var receiveTimeout: Duration?
+    public var usingRendezvous: Bool?
+    public var retransmissionAlgorithm: RetransmissionAlgorithm?
+    public var reusingAddress: Bool?
+    public var sendBufferSize: Int?
+    public var sendingDataSize: Int?
+    public var peerKeyMaterialState: KeyMaterialState?
+    public var isSendingBlocking: Bool?
+    public var sendTimeout: Duration?
+    public var state: SRTSocket.Status?
+    public var streamID: String?
+    public var isTooLatePacketDropEnabled: Bool?
+    public var localVersion: Int?
+    public var UDPSendBufferSize: Int?
+    public var UDPReceiveBufferSize: Int?
   }
 }
 
 extension SRTOptions {
-  enum CongestionControllerType: String {
+  public enum CongestionControllerType: String, Sendable {
     case live, file
   }
 
-  enum CryptoMode: Int {
+  public enum CryptoMode: Int, Sendable {
     case auto = 0
     case AES_CTR
     case AES_GCM
   }
 
-  struct EpollOptions: OptionSet {
-    let rawValue: Int
-    static let none: EpollOptions = []
-    static let `in` = EpollOptions(rawValue: 0x01)
-    static let out = EpollOptions(rawValue: 0x04)
-    static let error = EpollOptions(rawValue: 0x08)
-    static let connection = EpollOptions.out
-    static let accept = EpollOptions.in
-    static let update = EpollOptions(rawValue: 0x10)
-    static let et = EpollOptions(rawValue: 1 << 31)
+  public struct EpollOptions: OptionSet, Sendable {
+    public let rawValue: Int
+    public static let none: EpollOptions = []
+    public static let `in` = EpollOptions(rawValue: 0x01)
+    public static let out = EpollOptions(rawValue: 0x04)
+    public static let error = EpollOptions(rawValue: 0x08)
+    public static let connection = EpollOptions.out
+    public static let accept = EpollOptions.in
+    public static let update = EpollOptions(rawValue: 0x10)
+    public static let et = EpollOptions(rawValue: 1 << 31)
+
+    public init(rawValue: Int) {
+      self.rawValue = rawValue
+    }
   }
 
-  enum IPFamilyOption: Int {
+  public enum IPFamilyOption: Int, Sendable {
     case system = -1
     case both = 0
     case ipv6Only = 1
   }
 
-  enum KeyMaterialState: Int {
+  public enum KeyMaterialState: Int, Sendable {
     case unsecured = 0
     case securing
     case secured
@@ -146,29 +151,29 @@ extension SRTOptions {
     case badCryptoMode
   }
 
-  enum MaxBandwidthOption {
+  public enum MaxBandwidthOption: Sendable {
     case infinite
     case relativeToInputRate
     case absolute(Int)
   }
 
-  enum MaxRetransmissionBandwidthOption {
+  public enum MaxRetransmissionBandwidthOption: Sendable {
     case infinite
     case forbidden
     case absolute(Int)
   }
 
-  enum RetransmissionAlgorithm: Int {
+  public enum RetransmissionAlgorithm: Int, Sendable {
     case aggressive = 0
     case efficient
   }
 
-  enum TransmissionType: Int {
+  public enum TransmissionType: Int, Sendable {
     case live = 0
     case file
   }
 }
 
 extension Duration {
-  static let noLimitInMilliseconds = Duration.milliseconds(-1)
+  public static let noLimitInMilliseconds = Duration.milliseconds(-1)
 }
