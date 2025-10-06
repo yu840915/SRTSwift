@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "SRTSwift",
     platforms: [
-        .macOS(.v14),
+        .macOS(.v15),
         .iOS(.v17),
         .watchOS(.v8),
         .tvOS(.v15),
@@ -19,7 +19,14 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/krzyzanowskim/OpenSSL-Package.git", from: "3.3.2000")
+        .package(
+            url: "https://github.com/krzyzanowskim/OpenSSL-Package.git",
+            from: "3.3.2000",
+        ),
+        .package(
+            name: "AsyncUtils",
+            path: "file:///Users/lixuanyu/swift_proj.nosync/AsyncUtils"
+        ),
     ],
     targets: [
         .binaryTarget(
@@ -35,6 +42,7 @@ let package = Package(
             name: "SRTSwift",
             dependencies: [
                 "SRTInterface",
+                "AsyncUtils",
                 .product(name: "OpenSSL", package: "OpenSSL-Package"),
             ],
             swiftSettings: [

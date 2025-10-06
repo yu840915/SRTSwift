@@ -23,6 +23,8 @@ extension SRTResult: @retroactive CustomStringConvertible {
 public enum Error: Swift.Error, CustomStringConvertible, Equatable {
   case unknown
 
+  case invalidEndpoint
+
   case setUp
   case noServer
   case rejected
@@ -134,6 +136,7 @@ public enum Error: Swift.Error, CustomStringConvertible, Equatable {
     case .cannotEncodeArgument: "cannot encode argument"
     case .argumentTooLarge: "argument too large"
     case .argumentOutOfRange: "argument out of range"
+    case .invalidEndpoint: "invalid endpoint"
     case let .srtError(message): "SRT error: \(message)"
     }
   }
@@ -193,5 +196,11 @@ public enum Error: Swift.Error, CustomStringConvertible, Equatable {
       default:
         .unknown
       }
+  }
+}
+
+func checkResult(_ result: Int32) throws {
+  guard result >= 0 else {
+    throw Error.srtError(String(cString: srt_getlasterror_str()))
   }
 }
