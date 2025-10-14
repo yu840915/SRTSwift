@@ -12,6 +12,8 @@ public struct SRTOptions {
     public var sendBufferSize: Int?
     public var UDPSendBufferSize: Int?
     public var UDPReceiveBufferSize: Int?
+
+    public init() {}
   }
 
   public struct PreOptions: Sendable {  //pre
@@ -41,6 +43,8 @@ public struct SRTOptions {
     public var shouldDropTooLatePacket: Bool?
     public var usingTimestampBasedPacketDeliveryMode: Bool?
     public var transmissionType: TransmissionType?
+
+    public init() {}
   }
 
   public struct PostOptions: Sendable {  //post
@@ -57,6 +61,8 @@ public struct SRTOptions {
     public var sendDropDelay: Duration?
     public var isSendingBlocking: Bool?
     public var sendTimeout: Duration?
+
+    public init() {}
   }
 
   public struct OptionReadings: Sendable {  //read

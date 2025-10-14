@@ -1,3 +1,4 @@
+import AsyncUtils
 import Combine
 import Foundation
 import Network
@@ -15,11 +16,11 @@ public actor SRTSocket {
   private var readBuffer: Data
   private var wantsReading = false
   private var currentReading: Task<Void, Never>?
-  public var onStatus: any Publisher<SRTSocket.Status, Never> {
-    status$
+  public var onStatus: NonSendable<any Publisher<SRTSocket.Status, Never>> {
+    NonSendable(status$)
   }
-  public var onData: any Publisher<Data, Never> {
-    data$
+  public var onData: NonSendable<any Publisher<Data, Never>> {
+    NonSendable(data$)
   }
 
   init(socketID: SRTSOCKET) {
@@ -37,24 +38,24 @@ public actor SRTSocket {
     currentReading?.cancel()
   }
 
-  func startReading() {
+  public func startReading() {
     guard !wantsReading else { return }
     wantsReading = true
     readLoop()
   }
 
-  func stopReading() {
+  public func stopReading() {
     guard wantsReading else { return }
     wantsReading = false
     currentReading?.cancel()
     currentReading = nil
   }
 
-  func setOptions(_ options: SRTOptions.PostOptions) throws {
+  public func setOptions(_ options: SRTOptions.PostOptions) throws {
     try configurer.setPostOptions(options)
   }
 
-  func send(_ data: Data) throws {
+  public func send(_ data: Data) throws {
     try data.chunk(by: sendChunkSize).forEach { chunk in
       try sendChunk(chunk)
     }

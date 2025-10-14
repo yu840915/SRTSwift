@@ -45,9 +45,7 @@ let package = Package(
                 "AsyncUtils",
                 .product(name: "OpenSSL", package: "OpenSSL-Package"),
             ],
-            swiftSettings: [
-                .interoperabilityMode(.Cxx)  // Enable C++ interoperability
-            ],
+
         ),
         .testTarget(
             name: "SRTSwiftTests",
