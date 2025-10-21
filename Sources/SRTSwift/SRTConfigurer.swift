@@ -149,7 +149,7 @@ class SRTConfigurer {
     if let op = options.retransmissionAlgorithm {
       try setOption(name: SRTO_RETRANSMITALGO, value: Int32(op.rawValue))
     }
-    if let op = options.streamID {
+    if let op = options.streamID?.stringValue {
       guard op.count <= 512 else {
         throw Error.argumentTooLarge
       }
@@ -253,25 +253,25 @@ class SRTConfigurer {
     try setOption(name: name, data: data)
   }
 
-  private func setOption(name: SRT_SOCKOPT, value: Int32) throws {
+  func setOption(name: SRT_SOCKOPT, value: Int32) throws {
     var value = value
     let data = Data(bytes: &value, count: MemoryLayout<Int32>.size)
     try setOption(name: name, data: data)
   }
 
-  private func setOption(name: SRT_SOCKOPT, value: Int64) throws {
+  func setOption(name: SRT_SOCKOPT, value: Int64) throws {
     var value = value
     let data = Data(bytes: &value, count: MemoryLayout<Int64>.size)
     try setOption(name: name, data: data)
   }
 
-  private func setOption(name: SRT_SOCKOPT, value: Bool) throws {
+  func setOption(name: SRT_SOCKOPT, value: Bool) throws {
     var value = value
     let data = Data(bytes: &value, count: MemoryLayout<Bool>.size)
     try setOption(name: name, data: data)
   }
 
-  private func setOption(name: SRT_SOCKOPT, data: Data) throws {
+  func setOption(name: SRT_SOCKOPT, data: Data) throws {
     let result = data.withUnsafeBytes { (rawBufferPointer: UnsafeRawBufferPointer) in
       srt_setsockflag(socketID, name, rawBufferPointer.baseAddress, Int32(data.count))
     }

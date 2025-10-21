@@ -4,16 +4,25 @@ import Foundation
 import Network
 import SRTInterface
 
+private let logger = Loggers.connector.build()
+
 extension SRTConnector {
-  public enum Action {
+  public enum Action: Sendable {
     case invite
     case listen
+
+    var isSender: Bool {
+      switch self {
+      case .invite: true
+      case .listen: false
+      }
+    }
   }
 }
 
 public actor SRTConnector {
   let socketID: SRTSOCKET
-  let address: sockaddr
+  let address_in: sockaddr_in
   let addressLength: Int
   let action: Action
   let configurer: SRTConfigurer
@@ -25,21 +34,21 @@ public actor SRTConnector {
     options: SRTOptions.PreBindOptions,
     action: Action
   ) async throws {
-    guard var addr = endpoint.socketaddr_in else {
+    guard let addr = endpoint.socketaddr_in else {
       throw Error.invalidEndpoint
     }
+    address_in = addr
     let len = MemoryLayout<sockaddr_in>.size
-    var sockaddr = sockaddr()
-    memcpy(&sockaddr, &addr, len)
-    self.address = sockaddr
-    self.addressLength = len
+    addressLength = len
     let socket = srt_create_socket()
     guard socket != SRT_INVALID_SOCK else {
       throw Error.srtError(String(cString: srt_getlasterror_str()))
     }
-    self.socketID = socket
+    socketID = socket
     self.action = action
+    logger.debug("Created SRT connector")
     configurer = SRTConfigurer(socketID: socketID)
+    try configurer.setOption(name: SRTO_SENDER, value: action.isSender)
     try configurer.setPreBindOptions(options)
   }
 
@@ -57,6 +66,7 @@ public actor SRTConnector {
     if let completor {
       return try await completor.result()
     }
+    logger.debug("Will prepare SRT socket")
     let completor = await ThrowingCompleter<SRTSocket>()
     self.completor = completor
     try configurer.setPreOptions(options)
@@ -73,21 +83,32 @@ public actor SRTConnector {
         case .invite: try invite()
         case .listen: try listen()
         }
+      logger.debug("Socket connected \(sockId)")
       await completor?.resume(SRTSocket(socketID: sockId))
     } catch {
+      logger.warning("Fail to connect, \(error.localizedDescription)")
       await completor?.resume(throwing: error)
     }
   }
 
   func invite() throws -> SRTSOCKET {
-    var addr = address
-    try checkResult(srt_connect(socketID, &addr, Int32(addressLength)))
+    logger.debug("Start inviting")
+    var sockaddr = sockaddr()
+    var addr = address_in
+    memcpy(&sockaddr, &addr, addressLength)
+    try checkResult(srt_connect(socketID, &sockaddr, Int32(addressLength)))
     return socketID
   }
 
   func listen() throws -> SRTSOCKET {
-    var addr = address
-    try checkResult(srt_bind(socketID, &addr, Int32(addressLength)))
+    var sockaddr = sockaddr()
+    var addr = sockaddr_in()
+    addr.sin_port = address_in.sin_port
+    addr.sin_family = address_in.sin_family
+    memcpy(&sockaddr, &addr, addressLength)
+    logger.debug("Start binding")
+    try checkResult(srt_bind(socketID, &sockaddr, Int32(addressLength)))
+    logger.debug("Start listening")
     try checkResult(srt_listen(socketID, 1))
     var sockID = socketID
     let socket = srt_accept_bond(&sockID, 1, -100)

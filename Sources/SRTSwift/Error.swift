@@ -1,5 +1,7 @@
 import SRTInterface
 
+private let logger = Loggers.socket.build()
+
 public typealias SRTResult = Result<Void, Error>
 
 extension SRTResult: @retroactive CustomStringConvertible {
@@ -201,6 +203,8 @@ public enum Error: Swift.Error, CustomStringConvertible, Equatable {
 
 func checkResult(_ result: Int32) throws {
   guard result >= 0 else {
-    throw Error.srtError(String(cString: srt_getlasterror_str()))
+    let msg = String(cString: srt_getlasterror_str())
+    logger.trace("SRT Result code=\(result), msg=\(msg)")
+    throw Error.srtError(msg)
   }
 }

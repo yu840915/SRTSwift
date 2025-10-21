@@ -13,7 +13,9 @@ public struct SRTOptions {
     public var UDPSendBufferSize: Int?
     public var UDPReceiveBufferSize: Int?
 
-    public init() {}
+    public init(_ builder: SRTOptionBuilder<PreBindOptions>? = nil) {
+      builder?(&self)
+    }
   }
 
   public struct PreOptions: Sendable {  //pre
@@ -39,12 +41,14 @@ public struct SRTOptions {
     public var receiveLatency: Duration?
     public var usingRendezvous: Bool?
     public var retransmissionAlgorithm: RetransmissionAlgorithm?
-    public var streamID: String?
+    public var streamID: SRTStreamID?
     public var shouldDropTooLatePacket: Bool?
     public var usingTimestampBasedPacketDeliveryMode: Bool?
     public var transmissionType: TransmissionType?
 
-    public init() {}
+    public init(_ builder: SRTOptionBuilder<PreOptions>? = nil) {
+      builder?(&self)
+    }
   }
 
   public struct PostOptions: Sendable {  //post
@@ -62,7 +66,9 @@ public struct SRTOptions {
     public var isSendingBlocking: Bool?
     public var sendTimeout: Duration?
 
-    public init() {}
+    public init(_ builder: SRTOptionBuilder<PostOptions>? = nil) {
+      builder?(&self)
+    }
   }
 
   public struct OptionReadings: Sendable {  //read
