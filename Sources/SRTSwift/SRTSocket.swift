@@ -56,9 +56,11 @@ public actor SRTSocket {
   }
 
   public func send(_ data: Data) throws {
+    logger.trace("Will send data of size: \(data.count)")
     try data.chunk(by: sendChunkSize).forEach { chunk in
       try sendChunk(chunk)
     }
+    logger.trace("Finished sending data of size: \(data.count)")
   }
 }
 
@@ -98,6 +100,7 @@ extension SRTSocket {
   private func readData() throws -> Bool {
     guard !Task.isCancelled else { return false }
     guard wantsReading else { return false }
+    logger.trace("Will read data")
     updateStatus()
     let result = readBuffer.withUnsafeMutableBytes { pointer in
       guard
@@ -107,6 +110,7 @@ extension SRTSocket {
       }
       return srt_recvmsg(socketID, buffer, Int32(readBufferSize))
     }
+    logger.trace("Read data result: \(result)")
     guard !Task.isCancelled else { return false }
     guard wantsReading else { return false }
     if result > 0 {

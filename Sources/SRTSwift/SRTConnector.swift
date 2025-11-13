@@ -110,8 +110,9 @@ public actor SRTConnector {
     try checkResult(srt_bind(socketID, &sockaddr, Int32(addressLength)))
     logger.debug("Start listening")
     try checkResult(srt_listen(socketID, 1))
-    var sockID = socketID
-    let socket = srt_accept_bond(&sockID, 1, -100)
+    logger.debug("Start accepting")
+    let socket = srt_accept(socketID, nil, nil)
+    logger.debug("Accepted socket \(socket)")
     guard socket != SRT_INVALID_SOCK else {
       throw Error.srtError(String(cString: srt_getlasterror_str()))
     }

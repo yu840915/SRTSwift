@@ -1,5 +1,5 @@
 import SRTInterface
 
-func initializeSRT() throws {
+public func initializeSRT() throws {
   try checkResult(srt_startup())
 }
