@@ -1,5 +1,5 @@
 import AsyncUtils
-import Combine
+@preconcurrency import Combine
 import Foundation
 import Network
 import SRTInterface
@@ -16,18 +16,16 @@ public actor SRTSocket {
   private var readBuffer: Data
   private var wantsReading = false
   private var currentReading: Task<Void, Never>?
-  public var onStatus: NonSendable<any Publisher<SRTSocket.Status, Never>> {
-    NonSendable(status$)
-  }
-  public var onData: NonSendable<any Publisher<Data, Never>> {
-    NonSendable(data$)
-  }
+  public let onStatus: AnyPublisher<SRTSocket.Status, Never>
+  public let onData: AnyPublisher<Data, Never>
 
   init(socketID: SRTSOCKET) {
     self.socketID = socketID
     readBuffer = Data(count: readBufferSize)
     data$ = .init()
     status$ = .init(.setUp)
+    onStatus = status$.eraseToAnyPublisher()
+    onData = data$.eraseToAnyPublisher()
     configurer = SRTConfigurer(socketID: socketID)
     Task { [weak self] in
       await self?.updateStatus()
