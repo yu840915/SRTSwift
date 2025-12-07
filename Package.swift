@@ -24,8 +24,8 @@ let package = Package(
             from: "3.3.2000",
         ),
         .package(
-            name: "AsyncUtils",
-            path: "file:///Users/lixuanyu/swift_proj.nosync/AsyncUtils"
+            url: "https://github.com/yu840915/AsyncUtils.git",
+            branch: "main",
         ),
     ],
     targets: [

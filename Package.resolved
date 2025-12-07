@@ -1,6 +1,15 @@
 {
-  "originHash" : "1fda3375632b72f470a46f2f0d7b6cdcbeb334cd354c14e4b17ecd8b77e8ab5a",
+  "originHash" : "5c7f5ac730da5ba82611042103903986ec0cc31f91997a1b2edeaa3709405486",
   "pins" : [
+    {
+      "identity" : "asyncutils",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/yu840915/AsyncUtils.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "127ed8f895cfc8018ea0942a87015a48c7064019"
+      }
+    },
     {
       "identity" : "openssl-package",
       "kind" : "remoteSourceControl",
