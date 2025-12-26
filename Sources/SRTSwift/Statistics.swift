@@ -1,3 +1,4 @@
+import LogContext
 import SRTInterface
 
 private let megabits: Double = 1000 * 1000
@@ -202,7 +203,7 @@ extension Statistics {
     public var receive: Duration
   }
 
-  public struct Measurements {
+  public struct Measurements: LogContextReading {
     public var packetSendingPeriod: Duration
     public var flowWindowSizeInPackets: Int
     public var congestionWindowSizeInPackets: Int
@@ -210,6 +211,20 @@ extension Statistics {
     public var rtt: Duration
     public var bandwidth: Int
     public var availableBufferInBytes: SendingReceiving<Int>
+
+    public var logContext: LogContext {
+      LogContext {
+        $0["rtt"] = rtt.formattedMilliseconds
+        $0["bandwidth"] = bandwidth.formattedBandwidth
+        $0.setDebugDetail {
+          $0["sndPeriod"] = packetSendingPeriod.formattedMilliseconds
+          $0["flowWindow"] = flowWindowSizeInPackets
+          $0["congestionWindow"] = congestionWindowSizeInPackets
+          $0["onFlight"] = onFlightPackets
+          $0["availableBuf"] = availableBufferInBytes.formattedSize
+        }
+      }
+    }
 
     init(nativeValue: CBytePerfMon) {
       packetSendingPeriod = Duration.microseconds(Double(nativeValue.usPktSndPeriod))
@@ -222,6 +237,97 @@ extension Statistics {
         send: Int(nativeValue.byteAvailSndBuf),
         receive: Int(nativeValue.byteAvailRcvBuf),
       )
+    }
+  }
+}
+
+extension Statistics {
+  public enum LogContextSubject {
+    case instantaneous
+    case total
+  }
+  public func logContext(for subject: LogContextSubject) -> LogContext {
+    switch subject {
+    case .instantaneous: logContextForInstantaneousMetrics()
+    case .total: logContextForTotalMetrics()
+    }
+  }
+
+  func logContextForInstantaneousMetrics() -> LogContext {
+    LogContext {
+      $0["measurement"] = instantaneousMeasurements.logContext
+      $0["pck"] = packets.logContext
+      $0["pckLost"] = packetsLost.logContext
+      $0["pckDrop"] = packetsDropped.logContext
+      $0["bandwidth"] = bandwidths.formattedBandwidth
+      $0["uniquePck"] = uniquePackets.logContext
+    }
+  }
+
+  func logContextForTotalMetrics() -> LogContext {
+    LogContext {
+      $0["duration"] = duration.formattedMilliseconds
+      $0["pck"] = totalPackets.logContext
+      $0["pckLost"] = totalPacketsLost.logContext
+      $0["pckDrop"] = totalPacketsDropped.logContext
+      $0["bytes"] = totalBytes.formattedSize
+      $0["bytesLost"] = totalReceivedBytesLost.formattedSize
+      $0["uniquePck"] = totalUniquePackets.logContext
+    }
+  }
+}
+extension Statistics.SendingReceivingDuration: LogContextReading {
+  public var logContext: LogContext {
+    LogContext {
+      $0["send"] = send.formatted()
+      $0["receive"] = receive.formatted()
+    }
+  }
+
+  public var formattedMilliseconds: LogContext {
+    LogContext {
+      $0["send"] = send.formattedMilliseconds
+      $0["receive"] = receive.formattedMilliseconds
+    }
+  }
+}
+
+extension Statistics.SendingReceiving: LogContextReading where T: BinaryInteger {
+  public var logContext: LogContext {
+    LogContext {
+      $0["send"] = send.formatted()
+      $0["receive"] = receive.formatted()
+    }
+  }
+
+  public var formattedSize: LogContext {
+    LogContext {
+      $0["send"] = send.formattedSize
+      $0["receive"] = receive.formattedSize
+    }
+  }
+
+  public var formattedBandwidth: LogContext {
+    LogContext {
+      $0["send"] = send.formattedBandwidth
+      $0["receive"] = receive.formattedBandwidth
+    }
+  }
+}
+
+extension Statistics.SendingReceiving where T == Double {
+
+  public var formattedSize: LogContext {
+    LogContext {
+      $0["send"] = send.formattedSize
+      $0["receive"] = receive.formattedSize
+    }
+  }
+
+  public var formattedBandwidth: LogContext {
+    LogContext {
+      $0["send"] = send.formattedBandwidth
+      $0["receive"] = receive.formattedBandwidth
     }
   }
 }

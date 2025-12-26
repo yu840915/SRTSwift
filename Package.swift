@@ -27,6 +27,10 @@ let package = Package(
             url: "https://github.com/yu840915/AsyncUtils.git",
             branch: "main",
         ),
+        .package(
+            url: "https://github.com/yu840915/LogContext.git",
+            branch: "main",
+        ),
     ],
     targets: [
         .binaryTarget(
@@ -35,7 +39,7 @@ let package = Package(
         ),
         .target(
             name: "SRTInterface",
-            dependencies: ["libSRT"],
+            dependencies: ["libSRT"],            
             publicHeadersPath: "include"
         ),
         .target(
@@ -43,6 +47,7 @@ let package = Package(
             dependencies: [
                 "SRTInterface",
                 "AsyncUtils",
+                "LogContext",
                 .product(name: "OpenSSL", package: "OpenSSL-Package"),
             ],
 

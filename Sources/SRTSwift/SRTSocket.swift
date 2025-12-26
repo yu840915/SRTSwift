@@ -1,4 +1,3 @@
-import AsyncUtils
 @preconcurrency import Combine
 import Foundation
 import Network
@@ -59,6 +58,12 @@ public actor SRTSocket {
       try sendChunk(chunk)
     }
     logger.trace("Finished sending data of size: \(data.count)")
+  }
+
+  public func getStats() throws -> Statistics {
+    var ptr: SRT_TRACEBSTATS = .init()
+    try checkResult(srt_bstats(socketID, &ptr, 1))
+    return Statistics(nativeValue: ptr)
   }
 }
 

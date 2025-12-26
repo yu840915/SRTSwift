@@ -1,5 +1,5 @@
 {
-  "originHash" : "5c7f5ac730da5ba82611042103903986ec0cc31f91997a1b2edeaa3709405486",
+  "originHash" : "f66187a6696af25c00ff9fb63e26b9c34c25fdd9b837cd7eea931952f26cea3d",
   "pins" : [
     {
       "identity" : "asyncutils",
@@ -8,6 +8,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "127ed8f895cfc8018ea0942a87015a48c7064019"
+      }
+    },
+    {
+      "identity" : "logcontext",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/yu840915/LogContext.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "e1cffbfbb37e5990b806143348db47c3cfd520a3"
       }
     },
     {
